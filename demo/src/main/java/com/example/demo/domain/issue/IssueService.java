@@ -28,6 +28,16 @@ public class IssueService {
         return issueRepository.findById(issueId);
     }
 
+    // 課題の更新
+    @Transactional
+    public void update(long id, String summary, String description) {
+        IssueEntity issue = issueRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Issue with ID " + id + " not found."));
+        issue.setSummary(summary);
+        issue.setDescription(description);
+        issueRepository.save(issue);
+    }
+
     // 課題の削除
     @Transactional
     public void delete(Long id) {

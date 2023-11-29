@@ -3,6 +3,7 @@ package com.example.demo.web.issue;
 import com.example.demo.domain.issue.IssueEntity;
 import com.example.demo.domain.issue.IssueService;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.GroupSequence;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ui.Model;
 import org.springframework.stereotype.Controller;
@@ -54,6 +55,34 @@ public class IssueController {
             return "redirect:/issues";
         }
         return "issues/detail";
+    }
+
+    // 課題編集画面の表示
+    @GetMapping("/edit/{id}")
+    public String showEdit(@PathVariable("id") long issueId, Model model) {
+        Optional<IssueEntity> issueOptional = issueService.findById(issueId);
+        if (issueOptional.isPresent()) {
+            IssueEntity issue = issueOptional.get();
+            IssueForm issueForm = new IssueForm();
+            issueForm.setId(issue.getId());
+            issueForm.setSummary(issue.getSummary());
+            issueForm.setDescription(issue.getDescription());
+            model.addAttribute("issueForm", issueForm);
+
+            return "issues/editForm";
+        } else {
+            return "redirect:/issues";
+        }
+    }
+
+    // 課題の更新
+    @PostMapping("/update/{id}")
+    public String update(@PathVariable("id") Long id, @Validated IssueForm form, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            return "issues/editForm";
+        }
+        issueService.update(id, form.getSummary(), form.getDescription());
+        return "redirect:/issues";
     }
 
     // 課題の削除

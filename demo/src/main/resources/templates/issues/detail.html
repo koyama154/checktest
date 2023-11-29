@@ -11,7 +11,8 @@
     <h2 th:text="${issue.summary}">(summary)</h2>
     <p th:text="${issue.description}">(description)</p>
 </div>
-<div class="mt-3">
+<div class="mt-3 d-flex align-items-center">
+    <a href="./editForm.html" th:href="@{/issues/edit/{id}(id=${issue.id})}" class="btn btn-primary me-2">編集</a>
     <form th:action="@{/issues/delete/{id}(id=${issue.id})}" method="post">
         <button type="submit" class="btn btn-danger">削除</button>
     </form>
